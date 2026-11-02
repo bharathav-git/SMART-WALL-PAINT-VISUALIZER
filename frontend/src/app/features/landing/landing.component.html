@@ -1,0 +1,175 @@
+<div class="landing-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="badge badge-primary mb-3">Next-Generation Interior Visualizer</div>
+      <h1 class="hero-title">
+        Visualize Your Walls <br>
+        <span class="gradient-text">Before You Paint.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Upload your room photograph, segment walls with precision polygon and brush tools, and preview lifelike paints, finishes, and pattern overlays with luminance-preserving realism.
+      </p>
+
+      <div class="hero-cta-group">
+        <a routerLink="/studio" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>
+          Start Visualizing
+        </a>
+        <a routerLink="/studio" [queryParams]="{tab: 'palette'}" class="btn btn-outline btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2c0-2 2-4 2-7a7 7 0 0 0-7-7z" />
+          </svg>
+          Explore Colours
+        </a>
+      </div>
+
+      <!-- Trust highlights -->
+      <div class="hero-highlights">
+        <div class="highlight-item">
+          <span class="check-icon">✓</span> Free & Instant In-Browser
+        </div>
+        <div class="highlight-item">
+          <span class="check-icon">✓</span> Multi-Wall Dual-Tone
+        </div>
+        <div class="highlight-item">
+          <span class="check-icon">✓</span> High-Res PNG/JPEG Export
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Interactive Room Preview -->
+    <div class="hero-preview-container">
+      <div class="preview-card card">
+        <div class="preview-header">
+          <div class="room-selector-tabs">
+            <button 
+              *ngFor="let room of sampleRooms" 
+              class="room-tab-btn" 
+              [class.active]="selectedSampleRoom === room.path"
+              (click)="selectRoom(room.path)">
+              {{ room.name }}
+            </button>
+          </div>
+          <div class="color-indicator">
+            <span class="swatch-bubble" [style.backgroundColor]="activeColorHex"></span>
+            <span class="color-label">{{ activeColorName }} ({{ activeColorHex }})</span>
+          </div>
+        </div>
+
+        <div class="canvas-mock-wrapper">
+          <img [src]="selectedSampleRoom" alt="Sample Room" class="preview-room-image">
+          <div class="interactive-tint-overlay" [style.backgroundColor]="activeColorHex"></div>
+        </div>
+
+        <div class="quick-palette-bar">
+          <span class="palette-hint">Try Shade:</span>
+          <div class="swatches-row">
+            <button
+              *ngFor="let col of featuredColors"
+              class="palette-swatch"
+              [class.active]="activeColorHex === col.hex"
+              [style.backgroundColor]="col.hex"
+              [title]="col.name + ' (' + col.hex + ')'"
+              (click)="selectColor(col)">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3-Step Workflow -->
+  <section class="workflow-section">
+    <div class="section-header">
+      <span class="badge badge-neutral">Workflow</span>
+      <h2>Paint In Three Effortless Steps</h2>
+      <p>Transform your interior space from inspiration to precise visual reality.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card card">
+        <div class="step-number">01</div>
+        <div class="step-icon">📸</div>
+        <h3>Upload Your Photograph</h3>
+        <p>Snap a photo of your living room, bedroom, or kitchen, or choose from our architectural sample templates.</p>
+      </div>
+
+      <div class="step-card card">
+        <div class="step-number">02</div>
+        <div class="step-icon">📐</div>
+        <h3>Select Wall Regions</h3>
+        <p>Use our polygon point-to-point tool or freehand brush to isolate walls, accent niches, and trim.</p>
+      </div>
+
+      <div class="step-card card">
+        <div class="step-number">03</div>
+        <div class="step-icon">🎨</div>
+        <h3>Apply Paint & Compare</h3>
+        <p>Browse curated palettes, test matte/gloss finishes, adjust opacity, and compare with the interactive slider.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Highlights -->
+  <section class="features-section">
+    <div class="section-header">
+      <span class="badge badge-neutral">Features</span>
+      <h2>Engineered For Designers & Homeowners</h2>
+      <p>Professional grade tools without any complexity or CAD knowledge required.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-item card">
+        <div class="feature-icon">✨</div>
+        <h4>Luminance-Aware Blending</h4>
+        <p>Preserves real wall shadows, daylight gradients, and architectural textures instead of applying flat solid blocks.</p>
+      </div>
+
+      <div class="feature-item card">
+        <div class="feature-icon">🎨</div>
+        <h4>Multi-Wall Dual-Tone</h4>
+        <p>Paint separate walls or accent sections in complementary hues within the same photograph simultaneously.</p>
+      </div>
+
+      <div class="feature-item card">
+        <div class="feature-icon">🔄</div>
+        <h4>Interactive Comparison Slider</h4>
+        <p>Drag the split before-and-after slider to inspect real-time transformations and subtle finish nuances.</p>
+      </div>
+
+      <div class="feature-item card">
+        <div class="feature-icon">🏛️</div>
+        <h4>Architectural Finish Options</h4>
+        <p>Simulate light reflections with Matte, Eggshell, Satin, and Glossy sheen rendering options.</p>
+      </div>
+
+      <div class="feature-item card">
+        <div class="feature-icon">☁️</div>
+        <h4>Project Cloud Persistence</h4>
+        <p>Save designs to your personal account, re-open them later with wall selections intact, and refine at your pace.</p>
+      </div>
+
+      <div class="feature-item card">
+        <div class="feature-icon">📥</div>
+        <h4>Full Resolution Export</h4>
+        <p>Download clean PNG or JPEG images ready to share with contractors, interior designers, or family.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Banner -->
+  <section class="cta-banner">
+    <div class="cta-inner">
+      <h2>Ready to bring your walls to life?</h2>
+      <p>Start visualizing your home with our paint studio today. No software download required.</p>
+      <div class="cta-buttons">
+        <a routerLink="/studio" class="btn btn-primary btn-lg">Launch Paint Studio</a>
+        <a *ngIf="!authService.isLoggedIn()" routerLink="/register" class="btn btn-outline btn-lg text-white">Create Free Account</a>
+      </div>
+    </div>
+  </section>
+</div>

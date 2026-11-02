@@ -1,0 +1,95 @@
+<div class="designs-page">
+  <div class="designs-container">
+    <div class="designs-header">
+      <div class="titles">
+        <h2>Your Saved Visualizations</h2>
+        <p>Browse, reopen, download, or edit your saved interior room paint projects.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/upload" class="btn btn-outline">
+          <span>📤</span> Upload New Room
+        </a>
+        <a routerLink="/studio" class="btn btn-primary">
+          <span>🎨</span> Open Studio
+        </a>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="filters-toolbar card">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (ngModelChange)="onSearch()" 
+          class="form-control" 
+          placeholder="Search projects by name..." 
+        />
+      </div>
+
+      <div class="sort-selector-wrap">
+        <label class="sort-label">Sort By:</label>
+        <select [(ngModel)]="sortBy" (change)="onSortChange()" class="form-control sort-select">
+          <option value="newest">Recently Modified</option>
+          <option value="oldest">Oldest Created</option>
+          <option value="name">Project Name (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="state-container">
+      <div class="loader-spinner"></div>
+      <p>Loading your visualizations...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
+      <p>⚠️ {{ errorMessage }}</p>
+      <button class="btn btn-outline btn-sm" (click)="loadProjects()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && projects.length === 0" class="empty-state card">
+      <div class="empty-icon">📂</div>
+      <h3>No Saved Projects Found</h3>
+      <p *ngIf="searchQuery">No visualizations match "{{ searchQuery }}". Try clearing your search.</p>
+      <p *ngIf="!searchQuery">You haven't saved any visualizations yet. Launch the studio to paint and save your first room design!</p>
+      <div class="empty-actions">
+        <a routerLink="/studio" class="btn btn-primary">Open Paint Studio</a>
+      </div>
+    </div>
+
+    <!-- Designs Grid -->
+    <div *ngIf="!isLoading && projects.length > 0" class="designs-grid">
+      <div *ngFor="let project of projects" class="design-card card card-interactive">
+        <div class="thumb-container" (click)="openProject(project)">
+          <img [src]="project.finalImageUrl || project.thumbnailUrl || project.originalImageUrl" alt="Thumbnail" class="room-thumb" />
+          <div class="hover-overlay">
+            <span class="btn btn-primary btn-sm">Open in Studio</span>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="title-row">
+            <h4 class="project-title" [title]="project.name">{{ project.name }}</h4>
+            <span class="badge badge-neutral">{{ project.wallSelections.length }} Walls</span>
+          </div>
+
+          <div class="date-row">
+            <span>Modified: {{ project.updatedAt | date:'mediumDate' }}</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn btn-sm btn-outline" (click)="openProject(project)">Edit</button>
+            <button class="btn btn-sm btn-ghost" (click)="downloadThumbnail(project)" title="Download Image">Download</button>
+            <button class="btn btn-sm btn-ghost" (click)="renameProject(project)">Rename</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteProject(project)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

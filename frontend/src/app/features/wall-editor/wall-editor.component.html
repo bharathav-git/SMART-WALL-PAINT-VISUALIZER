@@ -1,0 +1,389 @@
+<div class="studio-layout">
+  <!-- Top Application Toolbar -->
+  <header class="studio-toolbar">
+    <div class="toolbar-left">
+      <a routerLink="/dashboard" class="btn btn-sm btn-ghost" title="Back to Dashboard">
+        <span>←</span> Dashboard
+      </a>
+      <div class="project-title-editor">
+        <input 
+          type="text" 
+          [(ngModel)]="projectName" 
+          class="title-input" 
+          placeholder="Project Name..." 
+          title="Click to rename project"
+        />
+        <span class="edit-icon">✏️</span>
+      </div>
+    </div>
+
+    <div class="toolbar-center">
+      <!-- Undo / Redo -->
+      <div class="btn-group">
+        <button class="btn btn-sm btn-outline" (click)="undo()" [disabled]="undoStack.length === 0" title="Undo (Ctrl+Z)">
+          ↩ Undo
+        </button>
+        <button class="btn btn-sm btn-outline" (click)="redo()" [disabled]="redoStack.length === 0" title="Redo (Ctrl+Y)">
+          ↪ Redo
+        </button>
+      </div>
+
+      <!-- Zoom Controls -->
+      <div class="zoom-group">
+        <button class="btn btn-sm btn-ghost" (click)="zoomOut()" title="Zoom Out">−</button>
+        <span class="zoom-label">{{ (zoomLevel * 100) | number:'1.0-0' }}%</span>
+        <button class="btn btn-sm btn-ghost" (click)="zoomIn()" title="Zoom In">+</button>
+        <button class="btn btn-sm btn-ghost" (click)="resetZoom()" title="Reset Zoom">Fit</button>
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <!-- Save Notification Alert -->
+      <span *ngIf="saveMessage" class="save-status-pill" [class.success]="saveMessageType === 'success'" [class.error]="saveMessageType === 'error'">
+        {{ saveMessage }}
+      </span>
+
+      <!-- Compare Before & After -->
+      <button class="btn btn-sm btn-outline" (click)="openComparison()">
+        <span>⚖️</span> Compare
+      </button>
+
+      <!-- Export Dropdown -->
+      <div class="export-dropdown-wrapper">
+        <button class="btn btn-sm btn-outline" (click)="exportImage('png')">
+          <span>📥</span> Export PNG
+        </button>
+      </div>
+
+      <!-- Save Project -->
+      <button class="btn btn-sm btn-primary" (click)="saveProject()" [disabled]="isSaving">
+        <span *ngIf="isSaving" class="spinner"></span>
+        <span>{{ isSaving ? 'Saving...' : '💾 Save Design' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 3-Column Studio Workspace -->
+  <main class="studio-body">
+    <!-- Left Sidebar: Selection Tools & Wall Manager -->
+    <aside class="sidebar sidebar-left">
+      <div class="sidebar-section">
+        <h4 class="section-heading">Selection Tools</h4>
+        <div class="tool-picker-grid">
+          <button 
+            class="tool-btn" 
+            [class.active]="activeTool === 'polygon'" 
+            (click)="activeTool = 'polygon'"
+            title="Polygon Point-by-Point Selection">
+            <span class="tool-icon">📐</span>
+            <span class="tool-name">Polygon Tool</span>
+          </button>
+
+          <button 
+            class="tool-btn" 
+            [class.active]="activeTool === 'brush'" 
+            (click)="activeTool = 'brush'"
+            title="Brush Freehand Wall Mask">
+            <span class="tool-icon">🖌️</span>
+            <span class="tool-name">Brush Tool</span>
+          </button>
+        </div>
+
+        <!-- Tool specific controls -->
+        <div *ngIf="activeTool === 'polygon'" class="tool-options-panel">
+          <p class="tool-instructions">Click corners around your wall. Press <strong>Close</strong> to complete region.</p>
+          <div class="action-btn-row">
+            <button class="btn btn-sm btn-outline btn-flex" (click)="closePolygon()">
+              <span>✓</span> Close Wall
+            </button>
+            <button class="btn btn-sm btn-ghost" (click)="resetCurrentPolygon()">
+              <span>✕</span> Reset
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="activeTool === 'brush'" class="tool-options-panel">
+          <div class="slider-control">
+            <div class="slider-header">
+              <span>Brush Radius</span>
+              <span class="slider-val">{{ brushSize }}px</span>
+            </div>
+            <input type="range" min="10" max="80" [(ngModel)]="brushSize" class="slider-input" />
+          </div>
+
+          <div class="brush-mode-toggle">
+            <button class="btn btn-sm" [class.btn-primary]="!isBrushErasing" [class.btn-outline]="isBrushErasing" (click)="isBrushErasing = false">
+              Paint Mask
+            </button>
+            <button class="btn btn-sm" [class.btn-danger]="isBrushErasing" [class.btn-outline]="!isBrushErasing" (click)="isBrushErasing = true">
+              Eraser
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wall Regions List -->
+      <div class="sidebar-section wall-regions-section">
+        <div class="section-header-row">
+          <h4 class="section-heading">Wall Regions ({{ wallSelections.length }})</h4>
+          <button class="btn btn-sm btn-primary" (click)="addNewWall('polygon')" title="Add another wall to this photograph">
+            + Add Wall
+          </button>
+        </div>
+
+        <div class="walls-list">
+          <div 
+            *ngFor="let sel of wallSelections; let i = index" 
+            class="wall-item" 
+            [class.active]="sel.id === activeSelectionId"
+            (click)="selectWall(sel.id)">
+            
+            <div class="wall-color-dot" [style.backgroundColor]="sel.paintSettings.hex"></div>
+            
+            <div class="wall-info">
+              <span class="wall-name">{{ sel.name }}</span>
+              <span class="wall-sub">{{ sel.paintSettings.colorName || sel.paintSettings.hex }} • {{ sel.type }}</span>
+            </div>
+
+            <div class="wall-actions" (click)="$event.stopPropagation()">
+              <button class="icon-btn" (click)="renameWall(sel)" title="Rename">✏️</button>
+              <button class="icon-btn danger" (click)="deleteWall(sel.id)" title="Delete Wall">🗑️</button>
+            </div>
+          </div>
+
+          <div *ngIf="wallSelections.length === 0" class="empty-walls-hint">
+            <p>No wall regions defined yet. Click <strong>+ Add Wall</strong> to start segmenting your room.</p>
+          </div>
+        </div>
+
+        <div *ngIf="wallSelections.length > 0" class="clear-all-row">
+          <button class="btn btn-sm btn-ghost btn-block" (click)="clearAllSelections()">Clear All Walls</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Canvas Workspace -->
+    <section class="canvas-workspace-container" (window:mouseup)="onCanvasMouseUp()">
+      <div class="canvas-viewport" [style.transform]="'scale(' + zoomLevel + ')'">
+        <canvas 
+          #editorCanvas
+          class="interactive-canvas"
+          (mousedown)="onCanvasMouseDown($event)"
+          (mousemove)="onCanvasMouseMove($event)"
+          (mouseenter)="isHoveringCanvas = true"
+          (mouseleave)="isHoveringCanvas = false">
+        </canvas>
+      </div>
+
+      <!-- Canvas floating status hint -->
+      <div class="canvas-status-pill">
+        <span>Tool: <strong>{{ activeTool | titlecase }}</strong></span>
+        <span>•</span>
+        <span>Active Wall: <strong>{{ getActiveSelection()?.name || 'None selected' }}</strong></span>
+      </div>
+    </section>
+
+    <!-- Right Sidebar: Paint Studio & Color Palette -->
+    <aside class="sidebar sidebar-right">
+      <div class="sidebar-tabs">
+        <button class="tab-btn" [class.active]="activeSidebarTab === 'colors'" (click)="activeSidebarTab = 'colors'">
+          Palette
+        </button>
+        <button class="tab-btn" [class.active]="activeSidebarTab === 'patterns'" (click)="activeSidebarTab = 'patterns'">
+          Patterns
+        </button>
+        <button class="tab-btn" [class.active]="activeSidebarTab === 'walls'" (click)="activeSidebarTab = 'walls'">
+          Finishes
+        </button>
+      </div>
+
+      <!-- TAB 1: Paint Palette -->
+      <div *ngIf="activeSidebarTab === 'colors'" class="tab-content">
+        <!-- Search & Custom Hex Input -->
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (ngModelChange)="filterColors()" 
+            class="form-control" 
+            placeholder="Search shade, HEX, category..." 
+          />
+        </div>
+
+        <!-- Category Filter Chips -->
+        <div class="category-chips">
+          <button 
+            *ngFor="let cat of colorCategories" 
+            class="chip-btn" 
+            [class.active]="selectedCategory === cat"
+            (click)="selectedCategory = cat; filterColors()">
+            {{ cat }}
+          </button>
+        </div>
+
+        <!-- Custom HEX Picker Quick Bar -->
+        <div class="custom-color-row">
+          <label class="custom-color-label">Custom HEX:</label>
+          <div class="custom-color-input-wrap">
+            <input 
+              type="color" 
+              [value]="activeHex" 
+              (change)="updateCustomColor($any($event.target).value)" 
+              class="native-color-picker" 
+            />
+            <input 
+              type="text" 
+              [ngModel]="activeHex" 
+              (ngModelChange)="updateCustomColor($event)" 
+              class="hex-text-input" 
+              maxlength="7" 
+            />
+          </div>
+        </div>
+
+        <!-- Swatches Grid -->
+        <div class="swatches-grid">
+          <div 
+            *ngFor="let col of filteredColors" 
+            class="swatch-card" 
+            [class.active]="activeHex === col.hex"
+            (click)="applyActiveColorToSelectedWall(col)">
+            
+            <div class="swatch-preview" [style.backgroundColor]="col.hex"></div>
+            <div class="swatch-meta">
+              <span class="swatch-name">{{ col.name }}</span>
+              <span class="swatch-hex">{{ col.hex }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Patterns & Textures -->
+      <div *ngIf="activeSidebarTab === 'patterns'" class="tab-content">
+        <div class="pattern-intro">
+          <p>Overlay decorative patterns & tactile wallpaper textures clipped directly to the selected wall.</p>
+        </div>
+
+        <div class="patterns-grid">
+          <!-- None option -->
+          <div class="pattern-card" [class.active]="!activePatternId" (click)="applyPattern(null)">
+            <div class="pattern-preview none-preview">None</div>
+            <span class="pattern-name">Solid Paint Only</span>
+          </div>
+
+          <div 
+            *ngFor="let pat of patterns" 
+            class="pattern-card" 
+            [class.active]="activePatternId === pat._id"
+            (click)="applyPattern(pat)">
+            <div class="pattern-preview" [innerHTML]="pat.svgContent"></div>
+            <span class="pattern-name">{{ pat.name }}</span>
+          </div>
+        </div>
+
+        <!-- Pattern Adjustments -->
+        <div *ngIf="activePatternId" class="pattern-controls card mt-3">
+          <div class="slider-control">
+            <div class="slider-header">
+              <span>Pattern Scale</span>
+              <span class="slider-val">{{ activePatternScale | number:'1.1-1' }}x</span>
+            </div>
+            <input type="range" min="0.5" max="3.0" step="0.1" [(ngModel)]="activePatternScale" (ngModelChange)="onPatternParamsChange()" class="slider-input" />
+          </div>
+
+          <div class="slider-control">
+            <div class="slider-header">
+              <span>Pattern Opacity</span>
+              <span class="slider-val">{{ (activePatternOpacity * 100) | number:'1.0-0' }}%</span>
+            </div>
+            <input type="range" min="0.1" max="0.9" step="0.05" [(ngModel)]="activePatternOpacity" (ngModelChange)="onPatternParamsChange()" class="slider-input" />
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Finishes, Opacity & Photorealism Tuning -->
+      <div *ngIf="activeSidebarTab === 'walls'" class="tab-content">
+        <div class="settings-group">
+          <label class="form-label">Architectural Sheen / Finish</label>
+          <div class="finishes-grid">
+            <button class="finish-btn" [class.active]="activeFinish === 'matte'" (click)="setFinish('matte')">
+              <span class="finish-title">Matte</span>
+              <span class="finish-desc">Flat, velvety, zero reflection</span>
+            </button>
+            <button class="finish-btn" [class.active]="activeFinish === 'eggshell'" (click)="setFinish('eggshell')">
+              <span class="finish-title">Eggshell</span>
+              <span class="finish-desc">Soft, subtle warm glow</span>
+            </button>
+            <button class="finish-btn" [class.active]="activeFinish === 'satin'" (click)="setFinish('satin')">
+              <span class="finish-title">Satin</span>
+              <span class="finish-desc">Silky, cleanable luminous sheen</span>
+            </button>
+            <button class="finish-btn" [class.active]="activeFinish === 'glossy'" (click)="setFinish('glossy')">
+              <span class="finish-title">Glossy</span>
+              <span class="finish-desc">High reflectance & specular pop</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="slider-control">
+          <div class="slider-header">
+            <span>Paint Coverage Opacity</span>
+            <span class="slider-val">{{ (activeOpacity * 100) | number:'1.0-0' }}%</span>
+          </div>
+          <input type="range" min="0.1" max="1.0" step="0.02" [(ngModel)]="activeOpacity" (ngModelChange)="onOpacityChange()" class="slider-input" />
+        </div>
+
+        <div class="slider-control">
+          <div class="slider-header">
+            <span>Luminance & Texture Preservation</span>
+            <span class="slider-val">{{ activeIntensity | number:'1.1-1' }}x</span>
+          </div>
+          <input type="range" min="0.3" max="1.8" step="0.05" [(ngModel)]="activeIntensity" (ngModelChange)="onIntensityChange()" class="slider-input" />
+        </div>
+
+        <div class="reset-wall-box">
+          <button class="btn btn-outline btn-block" (click)="resetSelectedWall()">
+            Reset Wall to Original Photograph
+          </button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Before & After Comparison Modal -->
+  <div *ngIf="isComparisonOpen" class="comparison-modal-backdrop" (click)="closeComparison()">
+    <div class="comparison-modal card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-titles">
+          <h3>Original vs. Painted Visualization</h3>
+          <p>Drag the split slider to compare your room before and after wall application.</p>
+        </div>
+        <button class="close-modal-btn" (click)="closeComparison()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="canvas-comparison-wrapper">
+          <canvas #comparisonCanvas class="comparison-canvas"></canvas>
+        </div>
+
+        <div class="slider-wrapper">
+          <span class="slider-side-label">Original</span>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            [value]="comparisonSliderPos" 
+            (input)="onComparisonSliderChange($event)" 
+            class="comparison-range" 
+          />
+          <span class="slider-side-label">Painted</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeComparison()">Back to Editor</button>
+        <button class="btn btn-primary" (click)="exportImage('png')">Download Final Image</button>
+      </div>
+    </div>
+  </div>
+</div>

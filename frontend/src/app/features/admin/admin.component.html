@@ -1,0 +1,282 @@
+<div class="admin-page">
+  <div class="admin-container">
+    <div class="admin-header">
+      <div class="admin-titles">
+        <span class="badge badge-warning">Administrator Portal</span>
+        <h2>System Administration & Catalog Management</h2>
+        <p>Monitor platform statistics, manage architectural paint collections, patterns, and registered users.</p>
+      </div>
+
+      <div class="tab-pills">
+        <button class="pill-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">Overview</button>
+        <button class="pill-btn" [class.active]="activeTab === 'colors'" (click)="activeTab = 'colors'">Paint Colors ({{ colors.length }})</button>
+        <button class="pill-btn" [class.active]="activeTab === 'patterns'" (click)="activeTab = 'patterns'">Patterns ({{ patterns.length }})</button>
+        <button class="pill-btn" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Users ({{ users.length }})</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: OVERVIEW & ANALYTICS -->
+    <div *ngIf="activeTab === 'overview'" class="tab-pane">
+      <!-- Summary Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-meta">
+            <span class="stat-label">Registered Users</span>
+            <span class="stat-value">{{ analytics?.summary?.totalUsers || users.length }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card">
+          <div class="stat-icon">🖼️</div>
+          <div class="stat-meta">
+            <span class="stat-label">Total Projects</span>
+            <span class="stat-value">{{ analytics?.summary?.totalProjects || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card">
+          <div class="stat-icon">🎨</div>
+          <div class="stat-meta">
+            <span class="stat-label">Paint Colors Active</span>
+            <span class="stat-value">{{ analytics?.summary?.totalColors || colors.length }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card">
+          <div class="stat-icon">✨</div>
+          <div class="stat-meta">
+            <span class="stat-label">Pattern Overlays</span>
+            <span class="stat-value">{{ analytics?.summary?.totalPatterns || patterns.length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories & Activity Grids -->
+      <div class="analytics-split-row">
+        <!-- Palette Distribution -->
+        <div class="card panel-card">
+          <h4>Paint Colors by Category</h4>
+          <div class="category-bars-list">
+            <div *ngFor="let item of analytics?.colorsByCategory" class="cat-bar-item">
+              <div class="cat-bar-labels">
+                <span class="cat-name">{{ item._id }}</span>
+                <span class="cat-count">{{ item.count }} shades</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" [style.width]="(item.count / colors.length * 100) + '%'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Audit Log -->
+        <div class="card panel-card">
+          <h4>Recent Activity & System Audit</h4>
+          <div class="activity-timeline">
+            <div *ngFor="let log of analytics?.recentActivity" class="timeline-item">
+              <div class="timeline-bullet"></div>
+              <div class="timeline-content">
+                <div class="timeline-top">
+                  <span class="action-tag">{{ log.action }}</span>
+                  <span class="action-time">{{ log.createdAt | date:'shortTime' }}</span>
+                </div>
+                <span class="action-user">User: {{ log.userId?.email || 'System' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PAINT COLORS MANAGEMENT -->
+    <div *ngIf="activeTab === 'colors'" class="tab-pane">
+      <div class="panel-header-row">
+        <div class="search-wrap">
+          <input 
+            type="text" 
+            [(ngModel)]="colorSearch" 
+            (ngModelChange)="filterColors()" 
+            class="form-control" 
+            placeholder="Search colors by name, HEX, or category..." 
+          />
+        </div>
+        <button class="btn btn-primary" (click)="openAddColorModal()">+ Add New Paint Color</button>
+      </div>
+
+      <div class="table-responsive card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Swatch</th>
+              <th>Name</th>
+              <th>HEX Code</th>
+              <th>Category</th>
+              <th>Manufacturer</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let color of filteredColors">
+              <td>
+                <div class="swatch-cell" [style.backgroundColor]="color.hex"></div>
+              </td>
+              <td><strong>{{ color.name }}</strong></td>
+              <td><code>{{ color.hex }}</code></td>
+              <td><span class="badge badge-neutral">{{ color.category }}</span></td>
+              <td>{{ color.manufacturer }}</td>
+              <td>
+                <div class="action-buttons-cell">
+                  <button class="btn btn-sm btn-outline" (click)="openEditColorModal(color)">Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteColor(color._id)">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: PATTERNS MANAGEMENT -->
+    <div *ngIf="activeTab === 'patterns'" class="tab-pane">
+      <div class="panel-header-row">
+        <h3>Available Pattern & Texture Overlays</h3>
+        <button class="btn btn-primary" (click)="openAddPatternModal()">+ Add New Pattern</button>
+      </div>
+
+      <div class="patterns-admin-grid">
+        <div *ngFor="let pat of patterns" class="pattern-admin-card card">
+          <div class="preview-box" [innerHTML]="pat.svgContent"></div>
+          <div class="pat-info">
+            <h4>{{ pat.name }}</h4>
+            <span class="badge badge-neutral">{{ pat.category }}</span>
+            <p>{{ pat.description || 'Architectural wall overlay pattern.' }}</p>
+          </div>
+          <div class="pat-actions">
+            <button class="btn btn-sm btn-danger" (click)="deletePattern(pat._id)">Delete Pattern</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: USERS MANAGEMENT -->
+    <div *ngIf="activeTab === 'users'" class="tab-pane">
+      <div class="panel-header-row">
+        <h3>Registered Platform Users ({{ users.length }})</h3>
+      </div>
+
+      <div class="table-responsive card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Registered</th>
+              <th>Visualizations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td><strong>{{ user.name }}</strong></td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="badge" [class.badge-warning]="user.role === 'admin'" [class.badge-primary]="user.role === 'user'">
+                  {{ user.role | uppercase }}
+                </span>
+              </td>
+              <td>{{ user.createdAt | date:'mediumDate' }}</td>
+              <td>{{ user.projectCount || 0 }} projects</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Add/Edit Modal -->
+  <div *ngIf="isColorModalOpen" class="modal-backdrop" (click)="closeColorModal()">
+    <div class="modal-card card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingColorId ? 'Edit Paint Color' : 'Add New Paint Color' }}</h3>
+        <button class="close-btn" (click)="closeColorModal()">✕</button>
+      </div>
+
+      <form [formGroup]="colorForm" (ngSubmit)="saveColor()" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Color Name</label>
+          <input type="text" formControlName="name" class="form-control" placeholder="e.g. Aegean Teal" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">HEX Code</label>
+          <div class="hex-input-row">
+            <input type="color" [value]="colorForm.get('hex')?.value" (change)="colorForm.patchValue({ hex: $any($event.target).value })" class="native-picker" />
+            <input type="text" formControlName="hex" class="form-control" placeholder="#3A7BD5" maxlength="7" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select formControlName="category" class="form-control">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Manufacturer / Attribution</label>
+          <input type="text" formControlName="manufacturer" class="form-control" placeholder="Smart Palette Studio" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description (Optional)</label>
+          <textarea formControlName="description" class="form-control" rows="2" placeholder="Subtle undertones and suggested spaces..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" (click)="closeColorModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ editingColorId ? 'Save Changes' : 'Create Color' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pattern Add Modal -->
+  <div *ngIf="isPatternModalOpen" class="modal-backdrop" (click)="closePatternModal()">
+    <div class="modal-card card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add New Pattern Overlay</h3>
+        <button class="close-btn" (click)="closePatternModal()">✕</button>
+      </div>
+
+      <form [formGroup]="patternForm" (ngSubmit)="savePattern()" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Pattern Name</label>
+          <input type="text" formControlName="name" class="form-control" placeholder="e.g. Linen Texture" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select formControlName="category" class="form-control">
+            <option *ngFor="let cat of patternCategories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Default Scale</label>
+          <input type="number" step="0.1" formControlName="defaultScale" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">SVG Content Code</label>
+          <textarea formControlName="svgContent" class="form-control" rows="3" placeholder="<svg width='30' height='30'>...</svg>"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" (click)="closePatternModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Pattern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

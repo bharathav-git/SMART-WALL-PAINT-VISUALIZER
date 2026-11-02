@@ -1,0 +1,92 @@
+<div class="upload-page">
+  <div class="upload-container">
+    <div class="upload-header">
+      <h2>Upload Room Photograph</h2>
+      <p>Select or drag and drop a high-resolution photograph of your room to begin wall segmentation.</p>
+    </div>
+
+    <!-- Error Banner -->
+    <div *ngIf="errorMessage" class="upload-alert alert-error">
+      <span>⚠️</span> {{ errorMessage }}
+    </div>
+
+    <div class="upload-card card">
+      <!-- Project Name Field -->
+      <div class="form-group">
+        <label class="form-label">Project Name</label>
+        <input
+          type="text"
+          [(ngModel)]="projectName"
+          class="form-control"
+          placeholder="e.g. Living Room Renovation 2026"
+        />
+      </div>
+
+      <!-- Drag & Drop Zone -->
+      <div 
+        *ngIf="!imagePreviewUrl" 
+        class="dropzone-area" 
+        [class.is-dragging]="isDragging"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+        
+        <div class="dropzone-icon">📷</div>
+        <h3>Drag & Drop Your Room Image Here</h3>
+        <p class="dropzone-hint">Supports JPG, JPEG, PNG, or WEBP up to 10MB</p>
+
+        <label class="btn btn-primary btn-file-picker">
+          <span>Browse Device</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" hidden />
+        </label>
+      </div>
+
+      <!-- Image Preview Zone -->
+      <div *ngIf="imagePreviewUrl" class="preview-zone">
+        <div class="preview-media-container">
+          <img [src]="imagePreviewUrl" alt="Room Preview" class="uploaded-img" />
+          <div class="preview-actions-bar">
+            <span class="file-name-label">{{ selectedFile?.name }}</span>
+            <div class="actions-right">
+              <label class="btn btn-sm btn-outline btn-replace">
+                <span>Replace</span>
+                <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" hidden />
+              </label>
+              <button class="btn btn-sm btn-danger" (click)="removeImage()">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="proceed-actions">
+          <button class="btn btn-primary btn-lg btn-block" (click)="proceedToStudio()" [disabled]="isUploading">
+            <span *ngIf="isUploading" class="spinner"></span>
+            <span>{{ isUploading ? 'Uploading Image & Initializing...' : 'Proceed to Wall Selection Editor →' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Architectural Sample Presets fallback -->
+    <div class="sample-fallback-card card">
+      <div class="fallback-header">
+        <h4>Or Start Instantly with Architectural Room Templates</h4>
+        <p>No room photo ready right now? Practice wall segmentation with pre-configured spaces.</p>
+      </div>
+
+      <div class="fallback-rooms-grid">
+        <div class="fallback-item" (click)="pickSample('/assets/sample-rooms/modern_living_room.svg', 'Architectural Living Room')">
+          <img src="/assets/sample-rooms/modern_living_room.svg" alt="Modern Living">
+          <span>Modern Living Room</span>
+        </div>
+        <div class="fallback-item" (click)="pickSample('/assets/sample-rooms/master_bedroom.svg', 'Master Bedroom Suite')">
+          <img src="/assets/sample-rooms/master_bedroom.svg" alt="Master Bedroom">
+          <span>Master Bedroom Suite</span>
+        </div>
+        <div class="fallback-item" (click)="pickSample('/assets/sample-rooms/minimalist_dining.svg', 'Scandinavian Dining')">
+          <img src="/assets/sample-rooms/minimalist_dining.svg" alt="Minimalist Dining">
+          <span>Scandinavian Dining</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="auth-page-container">
+  <div class="auth-card card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <span class="logo-mark">🎨</span>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Log in to access your saved interior visualization projects</p>
+    </div>
+
+    <!-- Alert Banner -->
+    <div *ngIf="errorMessage" class="auth-alert alert-error">
+      <span>⚠️</span> {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          placeholder="e.g. yourname@domain.com"
+          autocomplete="email"
+        />
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="form-error">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-input-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+          <button type="button" class="btn-toggle-pass" (click)="togglePasswordVisibility()" aria-label="Toggle password">
+            {{ showPassword ? '👁️' : '🔒' }}
+          </button>
+        </div>
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="form-error">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="isLoading">
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span>{{ isLoading ? 'Signing In...' : 'Sign In' }}</span>
+      </button>
+    </form>
+
+    <!-- Quick Demo Shortcuts -->
+    <div class="quick-credentials">
+      <span class="quick-label">Instant Demo Autofill:</span>
+      <div class="quick-buttons">
+        <button type="button" class="btn btn-sm btn-outline" (click)="fillDemoUser()">Demo User</button>
+        <button type="button" class="btn btn-sm btn-outline" (click)="fillAdminUser()">Admin User</button>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/register">Create an account</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="1000" height="650">
+  <defs>
+    <linearGradient id="diningWall" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E8E5DF"/>
+      <stop offset="100%" stop-color="#D5D0C7"/>
+    </linearGradient>
+    <linearGradient id="diningFloor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9C8974"/>
+      <stop offset="100%" stop-color="#6E5D4B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ceiling -->
+  <polygon points="0,0 1000,0 870,70 130,70" fill="#FAF9F6"/>
+
+  <!-- Left Wall -->
+  <polygon points="0,0 130,70 130,520 0,650" fill="#C2BBB0"/>
+
+  <!-- Dining Center Wall -->
+  <polygon points="130,70 870,70 870,520 130,520" fill="url(#diningWall)"/>
+
+  <!-- Right Wall -->
+  <polygon points="1000,0 870,70 870,520 1000,650" fill="#CCC6BB"/>
+
+  <!-- Timber Floor -->
+  <polygon points="0,650 130,520 870,520 1000,650" fill="url(#diningFloor)"/>
+
+  <!-- Large Round Minimalist Mirror -->
+  <circle cx="500" cy="230" r="95" fill="#4A4E69" stroke="#D4AF37" stroke-width="4"/>
+  <circle cx="500" cy="230" r="91" fill="#F0F3F4"/>
+  <path d="M440 180 Q500 210 560 190" stroke="#FFFFFF" stroke-width="8" opacity="0.6" fill="none"/>
+
+  <!-- Modern Scandinavian Dining Table -->
+  <ellipse cx="500" cy="530" rx="190" ry="18" fill="rgba(0,0,0,0.2)"/>
+  <!-- Table Top -->
+  <polygon points="320,440 680,440 730,470 270,470" fill="#EAE0D5"/>
+  <polygon points="270,470 730,470 730,480 270,480" fill="#C6AC8F"/>
+  <!-- Table Legs -->
+  <polygon points="330,480 340,480 320,555 310,555" fill="#22333B"/>
+  <polygon points="670,480 660,480 680,555 690,555" fill="#22333B"/>
+
+  <!-- Dining Chairs -->
+  <!-- Chair 1 Left -->
+  <rect x="220" y="380" width="70" height="90" rx="10" fill="#5E503F"/>
+  <polygon points="230,470 220,530 225,530 235,470" fill="#22333B"/>
+  <polygon points="280,470 285,530 280,530 275,470" fill="#22333B"/>
+  <!-- Chair 2 Right -->
+  <rect x="710" y="380" width="70" height="90" rx="10" fill="#5E503F"/>
+  <polygon points="720,470 715,530 720,530 725,470" fill="#22333B"/>
+  <polygon points="770,470 780,530 775,530 765,470" fill="#22333B"/>
+
+  <!-- Designer Ceramic Vase with Dried Botanicals -->
+  <ellipse cx="500" cy="450" rx="14" ry="25" fill="#FAF0CA"/>
+  <path d="M500 425 Q480 370 470 340" stroke="#7F5539" stroke-width="2" fill="none"/>
+  <path d="M500 425 Q515 360 525 330" stroke="#7F5539" stroke-width="2" fill="none"/>
+
+  <!-- Hanging Pendant Cone Lights -->
+  <line x1="420" y1="0" x2="420" y2="180" stroke="#22333B" stroke-width="2"/>
+  <polygon points="400,210 440,210 425,180 415,180" fill="#22333B"/>
+  <circle cx="420" cy="212" r="5" fill="#F1C40F"/>
+
+  <line x1="580" y1="0" x2="580" y2="180" stroke="#22333B" stroke-width="2"/>
+  <polygon points="560,210 600,210 585,180 575,180" fill="#22333B"/>
+  <circle cx="580" cy="212" r="5" fill="#F1C40F"/>
+</svg>

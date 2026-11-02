@@ -1,0 +1,128 @@
+<div class="dashboard-page">
+  <div class="dashboard-container">
+    <!-- Header banner -->
+    <div class="dashboard-header">
+      <div class="header-titles">
+        <h2>Welcome back, {{ authService.currentUser()?.name }}</h2>
+        <p>Manage your interior designs, segment room walls, and experiment with vibrant finishes.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/upload" class="btn btn-outline btn-lg">
+          <span>📤</span> Upload Photo
+        </a>
+        <a routerLink="/studio" class="btn btn-primary btn-lg">
+          <span>🎨</span> Open Studio
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Sample Starter Cards -->
+    <div class="sample-starter-section">
+      <div class="section-title-row">
+        <h3>Quick Starter Templates</h3>
+        <span class="subtitle">Jump straight into visualizing with curated room geometries</span>
+      </div>
+
+      <div class="templates-grid">
+        <div class="template-card card" (click)="startWithSample('/assets/sample-rooms/modern_living_room.svg', 'Living Room Makeover')">
+          <div class="template-thumb">
+            <img src="/assets/sample-rooms/modern_living_room.svg" alt="Living Room">
+          </div>
+          <div class="template-info">
+            <h4>Modern Living Room</h4>
+            <p>Main feature accent wall + daylight perspective</p>
+            <span class="action-link">Open in Studio →</span>
+          </div>
+        </div>
+
+        <div class="template-card card" (click)="startWithSample('/assets/sample-rooms/master_bedroom.svg', 'Master Bedroom Redesign')">
+          <div class="template-thumb">
+            <img src="/assets/sample-rooms/master_bedroom.svg" alt="Master Bedroom">
+          </div>
+          <div class="template-info">
+            <h4>Master Bedroom Suite</h4>
+            <p>Headboard feature wall + pendant lighting</p>
+            <span class="action-link">Open in Studio →</span>
+          </div>
+        </div>
+
+        <div class="template-card card" (click)="startWithSample('/assets/sample-rooms/minimalist_dining.svg', 'Dining Room Transformation')">
+          <div class="template-thumb">
+            <img src="/assets/sample-rooms/minimalist_dining.svg" alt="Dining Room">
+          </div>
+          <div class="template-info">
+            <h4>Scandinavian Dining</h4>
+            <p>Accent wall behind large circular mirror</p>
+            <span class="action-link">Open in Studio →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Recent Projects -->
+    <div class="projects-section">
+      <div class="section-title-row">
+        <div class="title-with-count">
+          <h3>Your Saved Visualizations</h3>
+          <span class="badge badge-primary">{{ projects.length }} Designs</span>
+        </div>
+        <a routerLink="/saved-designs" class="btn btn-sm btn-ghost">View All Designs →</a>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="state-container">
+        <div class="loader-spinner"></div>
+        <p>Loading your visualizations...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
+        <p>⚠️ {{ errorMessage }}</p>
+        <button class="btn btn-outline btn-sm" (click)="loadProjects()">Try Again</button>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && projects.length === 0" class="empty-projects card">
+        <div class="empty-icon">🖼️</div>
+        <h3>No Visualizations Yet</h3>
+        <p>Upload a photograph of your room or click a starter template above to paint your first wall.</p>
+        <div class="empty-actions">
+          <a routerLink="/upload" class="btn btn-primary">Upload Room Photo</a>
+          <button (click)="startWithSample('/assets/sample-rooms/modern_living_room.svg', 'My Living Room Project')" class="btn btn-outline">
+            Try Demo Living Room
+          </button>
+        </div>
+      </div>
+
+      <!-- Projects Grid -->
+      <div *ngIf="!isLoading && projects.length > 0" class="projects-grid">
+        <div *ngFor="let project of projects" class="project-card card card-interactive">
+          <div class="project-thumb-container" (click)="openProject(project)">
+            <img [src]="project.finalImageUrl || project.thumbnailUrl || project.originalImageUrl" alt="Thumbnail" class="project-thumb">
+            <div class="hover-overlay">
+              <span class="btn btn-primary btn-sm">Open in Studio</span>
+            </div>
+          </div>
+
+          <div class="project-details">
+            <div class="project-title-row">
+              <h4 class="project-name" [title]="project.name">{{ project.name }}</h4>
+              <span class="badge badge-neutral">{{ project.wallSelections.length }} Walls</span>
+            </div>
+
+            <div class="project-meta">
+              <span>Modified: {{ project.updatedAt | date:'mediumDate' }}</span>
+            </div>
+
+            <div class="project-card-actions">
+              <button class="btn btn-sm btn-outline" (click)="openProject(project)">Edit</button>
+              <button class="btn btn-sm btn-ghost" (click)="renameProject(project)">Rename</button>
+              <button class="btn btn-sm btn-danger" (click)="deleteProject(project)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

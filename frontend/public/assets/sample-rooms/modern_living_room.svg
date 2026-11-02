@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="1000" height="650">
+  <defs>
+    <linearGradient id="wallGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E2DFD8"/>
+      <stop offset="100%" stop-color="#CCC8BF"/>
+    </linearGradient>
+    <linearGradient id="leftWallGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#BBB6AC"/>
+      <stop offset="100%" stop-color="#C5C0B6"/>
+    </linearGradient>
+    <linearGradient id="floorGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8D7B68"/>
+      <stop offset="100%" stop-color="#5B4A3A"/>
+    </linearGradient>
+    <linearGradient id="windowLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#EDF2F7" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ceiling -->
+  <polygon points="0,0 1000,0 850,90 150,90" fill="#F7F6F2"/>
+
+  <!-- Left Wall (Side perspective) -->
+  <polygon points="0,0 150,90 150,510 0,650" fill="url(#leftWallGradient)"/>
+
+  <!-- Main Center Wall -->
+  <polygon points="150,90 850,90 850,510 150,510" fill="url(#wallGradient)"/>
+
+  <!-- Right Wall -->
+  <polygon points="1000,0 850,90 850,510 1000,650" fill="#D3CEC5"/>
+
+  <!-- Hardwood Floor -->
+  <polygon points="0,650 150,510 850,510 1000,650" fill="url(#floorGradient)"/>
+
+  <!-- Baseboard Trim -->
+  <polygon points="150,500 850,500 850,510 150,510" fill="#FFFFFF"/>
+  <polygon points="0,642 150,500 150,510 0,650" fill="#EAEAEA"/>
+  <polygon points="850,500 1000,642 1000,650 850,510" fill="#E2E2E2"/>
+
+  <!-- Architectural Large Window on Left Wall -->
+  <polygon points="25,120 125,155 125,430 25,480" fill="#BEE3F8"/>
+  <polygon points="25,120 125,155 125,430 25,480" fill="url(#windowLight)"/>
+  <!-- Window frames -->
+  <line x1="75" y1="137" x2="75" y2="455" stroke="#FFFFFF" stroke-width="4"/>
+  <line x1="25" y1="300" x2="125" y2="292" stroke="#FFFFFF" stroke-width="4"/>
+
+  <!-- Contemporary Wall Art on Main Wall -->
+  <rect x="420" y="160" width="160" height="130" fill="#FFFFFF" rx="4" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.1))"/>
+  <rect x="430" y="170" width="140" height="110" fill="#2D3748"/>
+  <circle cx="500" cy="225" r="35" fill="#E28743" opacity="0.8"/>
+  <path d="M440 260 Q500 190 560 260" stroke="#E2E8F0" stroke-width="6" fill="none"/>
+
+  <!-- Designer Modern Sofa -->
+  <ellipse cx="500" cy="510" rx="220" ry="25" fill="rgba(0,0,0,0.2)"/>
+  <!-- Sofa back -->
+  <rect x="320" y="380" width="360" height="90" rx="16" fill="#3A4D39"/>
+  <!-- Sofa cushions -->
+  <rect x="300" y="440" width="400" height="70" rx="14" fill="#4F6F52"/>
+  <rect x="290" y="420" width="50" height="85" rx="12" fill="#3A4D39"/>
+  <rect x="660" y="420" width="50" height="85" rx="12" fill="#3A4D39"/>
+  <!-- Sofa wooden legs -->
+  <polygon points="310,510 320,545 328,545 322,510" fill="#2C1810"/>
+  <polygon points="690,510 680,545 672,545 678,510" fill="#2C1810"/>
+  <!-- Cushions -->
+  <rect x="360" y="420" width="60" height="50" rx="8" fill="#ECE5C7" transform="rotate(-5 360 420)"/>
+  <rect x="580" y="420" width="60" height="50" rx="8" fill="#D3756B" transform="rotate(8 580 420)"/>
+
+  <!-- Indoor Plant in Ceramic Pot on Right -->
+  <ellipse cx="800" cy="530" rx="35" ry="12" fill="rgba(0,0,0,0.2)"/>
+  <!-- Pot -->
+  <polygon points="780,480 820,480 812,530 788,530" fill="#E8D5C4"/>
+  <!-- Plant Stems & Leaves -->
+  <path d="M800 480 Q780 430 750 420 Q770 410 800 475" fill="#4B6584"/>
+  <path d="M800 480 Q810 390 840 370 Q830 400 805 478" fill="#20BF6B"/>
+  <path d="M800 480 Q835 440 860 440 Q840 460 805 480" fill="#26DE81"/>
+  <path d="M800 480 Q770 460 740 470 Q765 480 798 482" fill="#20BF6B"/>
+
+  <!-- Modern Floor Lamp -->
+  <ellipse cx="220" cy="535" rx="25" ry="8" fill="rgba(0,0,0,0.15)"/>
+  <circle cx="220" cy="535" r="22" fill="#2D3436"/>
+  <!-- Pole with modern curve -->
+  <path d="M220 535 L220 280 Q220 220 260 210" stroke="#2D3436" stroke-width="4" fill="none"/>
+  <!-- Lampshade -->
+  <polygon points="245,210 275,210 285,245 235,245" fill="#DFE6E9"/>
+  <ellipse cx="260" cy="245" rx="25" ry="6" fill="#F1F2F6"/>
+  <!-- Warm Lamp Light Cone -->
+  <polygon points="235,245 285,245 360,520 180,520" fill="url(#windowLight)" opacity="0.3"/>
+</svg>

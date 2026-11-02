@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="1000" height="650">
+  <defs>
+    <linearGradient id="bedWallGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EAE7DC"/>
+      <stop offset="100%" stop-color="#D8D4C8"/>
+    </linearGradient>
+    <linearGradient id="floorBedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#735F4D"/>
+      <stop offset="100%" stop-color="#4C3A2C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ceiling -->
+  <polygon points="0,0 1000,0 880,80 120,80" fill="#FDFBF7"/>
+
+  <!-- Left Wall -->
+  <polygon points="0,0 120,80 120,530 0,650" fill="#CEC7BA"/>
+
+  <!-- Feature Headboard Wall -->
+  <polygon points="120,80 880,80 880,530 120,530" fill="url(#bedWallGradient)"/>
+
+  <!-- Right Wall -->
+  <polygon points="1000,0 880,80 880,530 1000,650" fill="#C5BDAE"/>
+
+  <!-- Floor -->
+  <polygon points="0,650 120,530 880,530 1000,650" fill="url(#floorBedGradient)"/>
+
+  <!-- Baseboard -->
+  <rect x="120" y="522" width="760" height="8" fill="#FFFFFF"/>
+
+  <!-- Soft Carpet Rug -->
+  <polygon points="200,620 280,535 720,535 800,620" fill="#E6DFD5"/>
+
+  <!-- Upholstered Headboard -->
+  <rect x="330" y="280" width="340" height="170" rx="12" fill="#5C5470"/>
+  <rect x="345" y="295" width="310" height="140" rx="6" fill="#352F44" opacity="0.4"/>
+
+  <!-- Master Bed & Pillows -->
+  <ellipse cx="500" cy="545" rx="190" ry="20" fill="rgba(0,0,0,0.2)"/>
+  <rect x="310" y="420" width="380" height="120" rx="10" fill="#FAF0E6"/>
+  <!-- Folded Quilt / Throw -->
+  <rect x="310" y="480" width="380" height="60" rx="4" fill="#B9B4C7"/>
+  <!-- Pillows -->
+  <rect x="350" y="380" width="130" height="55" rx="8" fill="#FFFFFF"/>
+  <rect x="520" y="380" width="130" height="55" rx="8" fill="#FFFFFF"/>
+  <rect x="380" y="405" width="80" height="40" rx="6" fill="#DDBEA9"/>
+  <rect x="540" y="405" width="80" height="40" rx="6" fill="#DDBEA9"/>
+
+  <!-- Bedside Tables & Pendant Lighting -->
+  <!-- Left Nightstand -->
+  <rect x="230" y="440" width="75" height="85" rx="4" fill="#8C7A6B"/>
+  <line x1="267" y1="0" x2="267" y2="330" stroke="#B38B59" stroke-width="2"/>
+  <circle cx="267" cy="335" r="14" fill="#F1C40F" opacity="0.8"/>
+
+  <!-- Right Nightstand -->
+  <rect x="695" y="440" width="75" height="85" rx="4" fill="#8C7A6B"/>
+  <line x1="732" y1="0" x2="732" y2="330" stroke="#B38B59" stroke-width="2"/>
+  <circle cx="732" cy="335" r="14" fill="#F1C40F" opacity="0.8"/>
+
+  <!-- Decorative Wall Triptych Art -->
+  <rect x="420" y="140" width="45" height="90" fill="#FFFFFF" rx="2"/>
+  <rect x="477" y="130" width="45" height="100" fill="#FFFFFF" rx="2"/>
+  <rect x="535" y="140" width="45" height="90" fill="#FFFFFF" rx="2"/>
+  <circle cx="500" cy="180" r="18" fill="#D4AF37"/>
+</svg>

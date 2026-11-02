@@ -1,0 +1,54 @@
+<header class="app-header">
+  <div class="header-container">
+    <a routerLink="/" class="brand-logo" (click)="closeMenu()">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 11V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h7" />
+          <path d="M17 19l4 4" />
+          <path d="M14 17l6-6" />
+          <circle cx="16" cy="15" r="3" />
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Smart Wall Paint</span>
+        <span class="brand-subtitle">Visualizer Studio</span>
+      </div>
+    </a>
+
+    <!-- Mobile Hamburger -->
+    <button class="mobile-toggle" (click)="toggleMenu()" aria-label="Toggle navigation">
+      <span class="bar" [class.open]="isMenuOpen"></span>
+      <span class="bar" [class.open]="isMenuOpen"></span>
+      <span class="bar" [class.open]="isMenuOpen"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <nav class="nav-links" [class.mobile-open]="isMenuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Home</a>
+      <a routerLink="/studio" routerLinkActive="active" (click)="closeMenu()">Studio</a>
+      <a *ngIf="authService.isLoggedIn()" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+      <a *ngIf="authService.isLoggedIn()" routerLink="/saved-designs" routerLinkActive="active" (click)="closeMenu()">Saved Designs</a>
+      <a *ngIf="authService.isAdmin()" routerLink="/admin" routerLinkActive="active" class="admin-badge-link" (click)="closeMenu()">
+        <span class="admin-shield">⚡</span> Admin
+      </a>
+
+      <!-- Auth Actions -->
+      <div class="auth-actions">
+        <ng-container *ngIf="!authService.isLoggedIn(); else userLoggedInTpl">
+          <a routerLink="/login" class="btn btn-ghost" (click)="closeMenu()">Sign In</a>
+          <a routerLink="/register" class="btn btn-primary" (click)="closeMenu()">Get Started</a>
+        </ng-container>
+
+        <ng-template #userLoggedInTpl>
+          <div class="user-profile-menu">
+            <span class="user-greeting">
+              <span class="user-avatar">{{ authService.currentUser()?.name?.charAt(0) || 'U' }}</span>
+              <span class="user-name">{{ authService.currentUser()?.name }}</span>
+            </span>
+            <button class="btn btn-outline btn-sm" (click)="logout()">Sign Out</button>
+          </div>
+        </ng-template>
+      </div>
+    </nav>
+  </div>
+</header>

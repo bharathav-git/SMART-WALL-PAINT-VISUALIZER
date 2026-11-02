@@ -1,0 +1,95 @@
+<div class="auth-page-container">
+  <div class="auth-card card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <span class="logo-mark">🎨</span>
+      </div>
+      <h2>Create Your Account</h2>
+      <p>Start segmenting and visualizing paint palettes in minutes</p>
+    </div>
+
+    <!-- Alert Banner -->
+    <div *ngIf="errorMessage" class="auth-alert alert-error">
+      <span>⚠️</span> {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input
+          type="text"
+          formControlName="name"
+          class="form-control"
+          [class.is-invalid]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+          placeholder="e.g. Eleanor Vance"
+          autocomplete="name"
+        />
+        <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="form-error">
+          <span *ngIf="registerForm.get('name')?.errors?.['required']">Full name is required.</span>
+          <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+          placeholder="e.g. eleanor@example.com"
+          autocomplete="email"
+        />
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="form-error">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-input-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            placeholder="At least 6 characters"
+            autocomplete="new-password"
+          />
+          <button type="button" class="btn-toggle-pass" (click)="togglePasswordVisibility()" aria-label="Toggle password">
+            {{ showPassword ? '👁️' : '🔒' }}
+          </button>
+        </div>
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="form-error">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="confirmPassword"
+          class="form-control"
+          [class.is-invalid]="(registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) || (registerForm.touched && registerForm.errors?.['passwordMismatch'])"
+          placeholder="Re-enter your password"
+          autocomplete="new-password"
+        />
+        <div *ngIf="registerForm.touched && registerForm.errors?.['passwordMismatch']" class="form-error">
+          <span>Passwords do not match.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="isLoading">
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span>{{ isLoading ? 'Creating Account...' : 'Get Started' }}</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+    </div>
+  </div>
+</div>
