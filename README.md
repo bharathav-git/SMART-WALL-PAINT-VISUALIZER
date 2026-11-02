@@ -185,3 +185,4 @@ For in-depth technical documentation, refer to the following guides:
 
 ## 📄 License
 This project is licensed under the MIT License.
+"# SMART-WALL-PAINT-VISUALIZER" 
